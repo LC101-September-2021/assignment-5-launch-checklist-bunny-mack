@@ -3,8 +3,20 @@ const { ConsoleReporter } = require('jasmine');
 // Write your helper functions here!
 require('isomorphic-fetch');
 
-function addDestinationInfo(document, name, diameter, star, distance, moons, imageUrl) {
-   // Here is the HTML formatting for our mission target div.
+function addDestinationInfo(document, name, diameter, star, distance, moons, imageUrl) {   
+    let container = document.getElementsByTagName("DIV")[0];
+    container.innerHTML = `
+    <h2>Mission Destination</h2>
+    <ol>
+        <li>Name: ${name} </li>
+        <li>Diameter: ${diameter} </li>
+        <li>Star: ${star}</li>
+        <li>Distance from Earth: ${distance} </li>
+        <li>Number of Moons: ${moons} </li>
+    </ol>
+    <img src=${imageUrl}>
+    `    
+    // Here is the HTML formatting for our mission target div.
    /*
                 <h2>Mission Destination</h2>
                 <ol>
@@ -38,7 +50,7 @@ function formSubmission(document, list, pilot, copilot, fuelLevel, cargoLevel) {
     } else if (validateInput(pilot) === "Is a Number" || validateInput(copilot) === "Is a Number") {
         alert("Invalid entry");
         event.preventDefault();
-    }
+    } else {
     
     let ol = list.getElementsByTagName("LI");
     ol[0].innerHTML = `Pilot ${document.elements.pilotName.value} is ready.`
@@ -53,6 +65,7 @@ function formSubmission(document, list, pilot, copilot, fuelLevel, cargoLevel) {
         ol[2].style.visibility = "visible";
     } else {
         ol[2].innerHTML = "Fuel level is high enough for launch."
+        ol[2].style.color = "black";
         ol[2].style.visibility = "visible";
     }
 
@@ -62,6 +75,7 @@ function formSubmission(document, list, pilot, copilot, fuelLevel, cargoLevel) {
         ol[3].style.visibility = "visible";
     } else {
         ol[3].innerHTML = "Cargo mass is low enough for launch."
+        ol[3].style.color = "black";
         ol[3].style.visibility = "visible";
     }
 
@@ -75,17 +89,20 @@ function formSubmission(document, list, pilot, copilot, fuelLevel, cargoLevel) {
         update[0].innerHTML = "Shuttle not ready for launch"
     }
 }
+}
 
 async function myFetch() {
     let planetsReturned;
 
-    planetsReturned = await fetch().then( function(response) {
-        });
+    planetsReturned = await fetch("https://handlers.education.launchcode.org/static/planets.json").then( function(response) {
+        return response.json() });
 
     return planetsReturned;
 }
 
 function pickPlanet(planets) {
+    let planetSelected = planets[Math.floor(Math.random()*6)];
+    return planetSelected;
 }
 
 module.exports.addDestinationInfo = addDestinationInfo;
